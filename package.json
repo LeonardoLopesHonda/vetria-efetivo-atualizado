@@ -4,7 +4,7 @@
   "description": "Este projeto tem como objetivo ajudar o administrativo na disponibilidade de dados para execução de tarefas que exijam os dados do efetivo atualizado.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next dev"
   },
   "author": "",
   "license": "MIT",

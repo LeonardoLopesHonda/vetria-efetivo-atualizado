@@ -1,4 +1,5 @@
 import xlsxReadFile from "read-excel-file";
+import Papa from "papaparse";
 
 function Home() {
   async function convert_xlsx(input, json_data) {
@@ -16,6 +17,22 @@ function Home() {
     });
   }
 
+  function convert_csv(input, json_data) {
+    return new Promise((resolve, reject) => {
+      Papa.parse(input, {
+        complete: (results) => {
+          results.data.forEach((row) => {
+            json_data.push(row);
+          });
+          resolve(); // Resolve when parsing is done
+        },
+        header: true,
+        skipEmptyLines: true,
+        encoding: "ISO-8859-1",
+      });
+    });
+  }
+
   async function handleClick() {
     const input = document.getElementById("excel_file");
     const textarea = document.getElementById("json_data");
@@ -24,7 +41,13 @@ function Home() {
     const file_format = file_name[file_name.length - 1];
     const json_data = [];
 
-    await convert_xlsx(file, json_data);
+    if (file_format == "xlsx") {
+      await convert_xlsx(file, json_data);
+    } else if (file_format == "csv") {
+      await convert_csv(file, json_data);
+    } else {
+      json_data.push("Formato Inválido");
+    }
 
     textarea.value = JSON.stringify(json_data, null, 2);
   }

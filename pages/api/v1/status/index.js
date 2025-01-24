@@ -1,24 +1,28 @@
 import database from "infra/database.js";
-
 async function status(request, response) {
-  const result = await database.query("SELECT 1 + 1 as SUM;");
-  console.log(result.rows);
+  const databaseName = process.env.POSTGRES_DB;
+  const updatedAt = new Date().toISOString();
+  const version = (await database.query("SHOW server_version;")).rows[0]
+    .server_version;
+  const max_connections = (await database.query("SHOW max_connections;"))
+    .rows[0].max_connections;
+  const opened_connections = (
+    await database.query({
+      text: "SELECT COUNT(*)::int as opened_connections from pg_stat_activity WHERE datname = $1;",
+      values: [databaseName],
+    })
+  ).rows[0].opened_connections;
+
+  console.log(opened_connections);
 
   response.status(200).json({
-    active_users: {
-      Matricula: "000000001",
-      "Cód. Filial": "1",
-      "Nome Completo do Colaborador": "Leonardo Lopes Honda",
-      "CPF - Número": "12345678912",
-      "Data Nascimento": "26/12/2005",
-      "Data Admissão": "20/05/2024",
-      "Cód. Situação": "1",
-      "Desc. Situação": "Ativo",
-      "Cód. Centro Custo": "00000001",
-      "Denominação do Centro de Custo": "GM - JOVENS APRENDIZES",
-      "Cód. Cargo": "ip872",
-      "Denominação do Cargo": "APRENDIZ EM ADMINISTRACAO",
-      "Data de Rescisão": "",
+    updated_at: updatedAt,
+    dependencies: {
+      database: {
+        version: version,
+        max_connections: parseInt(max_connections),
+        opened_connections: opened_connections,
+      },
     },
   });
 }

@@ -1,5 +1,3 @@
-import database from "infra/database.js";
-
 async function funcionarios(request, response) {
   response.status(200).json({
     active_users: {

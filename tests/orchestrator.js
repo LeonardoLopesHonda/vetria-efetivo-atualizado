@@ -1,9 +1,9 @@
 import retry from "async-retry";
 
 async function waitForAllServices() {
-  await waitForAllServices();
+  await waitForWebServer();
 
-  async function waitForAllServices() {
+  async function waitForWebServer() {
     return retry(fetchStatusPage, {
       retries: 100,
       maxTimeout: 1000,

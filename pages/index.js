@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
+
 import xlsxReadFile from "read-excel-file";
 import Papa from "papaparse";
 
